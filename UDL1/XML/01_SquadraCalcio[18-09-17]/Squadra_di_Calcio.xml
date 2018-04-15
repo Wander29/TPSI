@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/css" href="Style.css"?>
+<text>
+    <squadra>
+        <nomeSq>Juminter</nomeSq>
+        <serie>C1</serie>
+        <presidente>Mario Rossi</presidente>
+        <allenatore>Giuseppe Bianchi</allenatore>
+        <rosa>
+            <giocatore>
+                <nomeG>Leonardo Da Vinci</nomeG>
+                <ruolo>Terzino</ruolo>
+                <titolare>si</titolare>
+            </giocatore>
+            <giocatore>
+                <nomeG>Cristoforo Colombo</nomeG>
+                <ruolo>Attaccante e Mezzala</ruolo>
+                <titolare>no</titolare>
+            </giocatore>
+            <giocatore>
+                <nomeG>Giulio Cesare</nomeG>
+                <ruolo>Difensore</ruolo>
+                <titolare>si</titolare>
+            </giocatore>
+        </rosa>
+    </squadra>
+</text>

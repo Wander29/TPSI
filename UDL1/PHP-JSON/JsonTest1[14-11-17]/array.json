@@ -1,0 +1,23 @@
+{
+    "PC_ASSEMBLATI":
+    {
+        "PC1":
+            {
+                "id": "0001",
+                "marca": "Asus",
+                "modello": "Asus X23654",
+                "Hardware":
+                    [
+                        { "id": "1001", "tipo": "Intel i7" },
+                        { "id": "1002", "tipo": "Scheda Madre X99323" },
+                        { "id": "1003", "tipo": "Ram 6GB" },
+                        { "id": "1004", "tipo": "SSD 275GB" }
+                    ],
+                "Software":
+                    [
+                        { "id": "5001", "tipo": "Windows 10" },
+                        { "id": "5002", "tipo": "Norton Antivirus" }
+                    ]
+            }
+    }
+}

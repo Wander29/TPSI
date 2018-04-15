@@ -1,0 +1,12 @@
+<!ELEMENT automobile (nome, marca, cilindrata, prezzo, dimensioni, tipologia_motore, kw, porte)>
+<!ELEMENT nome (#PCDATA)>
+<!ELEMENT marca (#PCDATA)>
+<!ELEMENT cilindrata (#PCDATA)>
+<!ELEMENT prezzo (#PCDATA)>
+<!ELEMENT dimensioni (lunghezza, larghezza, altezza)>
+    <!ELEMENT lunghezza (#PCDATA)>
+    <!ELEMENT larghezza (#PCDATA)>
+    <!ELEMENT altezza (#PCDATA)>
+<!ELEMENT tipologia_motore (#PCDATA)>
+<!ELEMENT kw (#PCDATA)>
+<!ELEMENT porte (#PCDATA)>

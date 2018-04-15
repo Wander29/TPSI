@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE DTD SYSTEM "DTD.dtd">
+<?xml-stylesheet type="text/css" href="Style.css"?>
+<text>
+    <squadra>
+        <nome>AMC 98</nome>
+        <serie>A</serie>
+        <presidente>Mario Rossi</presidente>
+        <allenatore>Giuseppe Bianchi</allenatore>
+        <rosa>
+            <giocatore titolare="si">
+                <nomeG>Leonardo Da Vinci</nomeG>
+                <ruolo>Terzino</ruolo>
+                
+            </giocatore>
+            <giocatore titolare="si">
+                <nomeG>Cristoforo Colombo</nomeG>
+                <ruolo>Attaccante e Mezzala</ruolo>
+                <titolare>no</titolare>
+            </giocatore>
+            <giocatore titolare="si">
+                <nomeG>Giulio Cesare</nomeG>
+                <ruolo>Difensore</ruolo>
+                <titolare>si</titolare>
+            </giocatore>
+        </rosa>
+    </squadra>
+</text>

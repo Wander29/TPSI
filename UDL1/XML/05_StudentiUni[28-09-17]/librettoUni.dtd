@@ -1,0 +1,22 @@
+<!ELEMENT studenti (librettoUniversitarioStudente+)>
+  <!ELEMENT librettoUniversitarioStudente (nome, cognome, facoltà, annoCorso, fuoriCorso?, esami)>
+    <!ELEMENT nome (#PCDATA)>
+    <!ELEMENT cognome (#PCDATA)>
+    <!ELEMENT facoltà (#PCDATA)>
+    <!ELEMENT annoCorso (#PCDATA)>
+    <!ELEMENT fuoriCorso (#PCDATA)>
+    <!ELEMENT esami (esame+)>
+      <!ELEMENT esame (data, voto, crediti, professore?, lode?)>
+        <!ELEMENT data (giorno, mese, anno)>
+          <!ELEMENT giorno (#PCDATA)>
+          <!ELEMENT mese (#PCDATA)>
+          <!ELEMENT anno (#PCDATA)>
+        <!ELEMENT voto (#PCDATA)>
+        <!ELEMENT crediti (#PCDATA)>
+        <!ELEMENT professore (#PCDATA)>
+        <!ELEMENT lode (#PCDATA)>
+      
+<!ATTLIST librettoUniversitarioStudente numMatricola CDATA #REQUIRED> 
+  <!ATTLIST esame corso CDATA #IMPLIED> 
+
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE automobile SYSTEM "Auto_DTD.dtd"> <!-- root_element = primo tag XML (elemento radice del file XML) -->
+<automobile>
+    <nome>punto e virgola</nome>
+    <marca>fiat</marca>
+    <cilindrata>2099</cilindrata>
+    <prezzo>3000</prezzo>
+    <dimensioni>
+         <lunghezza>350</lunghezza>
+         <larghezza>180</larghezza>	
+         <altezza>150</altezza>
+    </dimensioni>	
+    <tipologia_motore>Diesel</tipologia_motore>	
+    <kw>52</kw>	
+    <porte>8</porte>		
+</automobile>

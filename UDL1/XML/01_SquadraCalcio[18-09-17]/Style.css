@@ -1,0 +1,54 @@
+text{
+    background-color: bisque;
+    font-family: "Arial", serif;
+}
+
+squadra{
+	text-align: center;
+	color: black;
+    display: block;
+    margin-left: 20pt;
+}
+
+nomeSq{
+	font-size: 60px;
+    display: block;
+    color: orangered;
+}
+
+allenatore{
+    display: block;
+    color: green;
+    background-color: white;
+}
+
+presidente{
+    display: block;
+    color: red;
+    background-color: white;
+}
+
+giocatore{
+    display: block;
+}
+
+rosa{
+    color: chartreuse;
+}
+serie{
+    display: block;
+    font-size: 20px;
+}
+
+nomeG{
+    background-color: red;
+}
+
+ruolo{
+    background-color: cadetblue;
+}
+
+titolare{
+    color: red;
+    background-color: aliceblue;
+}

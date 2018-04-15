@@ -1,0 +1,12 @@
+<!ELEMENT squadra (#nome, serie, presidente, allenatore, rosa)>
+	<!ELEMENT nome (#PCDATA)>
+	<!ELEMENT serie (#PCDATA)>
+	<!ELEMENT presidente (#PCDATA)>
+	<!ELEMENT allenatore (#PCDATA)>
+	<!ELEMENT rosa (#giocatore)!>
+		<!ELEMENT giocatore (#nomeG, ruolo)>
+			<!ELEMENT nomeG (#PCDATA)>
+			<!ELEMENT ruolo (#PCDATA)>
+<!ATTLIST giocatore
+	titolare (si|no) #REQUIRED
+>

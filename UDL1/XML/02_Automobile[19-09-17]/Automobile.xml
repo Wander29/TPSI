@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?DOCTYPE Auto_DTD SYSTEM "Auto_DTD.dtd">
+<automobile>
+    <nome>Nome: punto e virgola</nome>
+    <marca>Marca: fiat</marca>
+    <cilindrata>Cilindrata: 2099</cilindrata>
+    <prezzo>Prezzo: 3000</prezzo>
+    <dimensioni>Dimensioni</dimensioni>
+         <lunghezza>Lunghezza: 350</lunghezza>
+         <larghezza>Larghezza: 180</larghezza>	
+         <altezza>Altezza: 150</altezza>	
+    <tipologia_motore>Tipologia motore: Diesel</tipologia_motore>	
+    <kw>Kw: 52</kw>	
+    <porte>Numero di porte: 8</porte>		
+</automobile>

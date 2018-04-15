@@ -1,0 +1,22 @@
+label{
+	font-family: coursive;
+	font-size: 20px;
+	color: red;
+}
+
+text{
+	text-align: center;
+	font-family: arial;
+	font-size: 25px;
+	color:black;
+	
+}
+
+block{
+	display: block;
+}
+
+dimensioni{
+	font-size:25px;
+	color:red;
+ }

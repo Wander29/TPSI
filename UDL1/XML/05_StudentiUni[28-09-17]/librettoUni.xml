@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="style.css"?>
+<!DOCTYPE studenti SYSTEM "librettoUni.dtd">
+<studenti>
+  <librettoUniversitarioStudente numMatricola = "11654">
+    <nome>Paolo</nome>
+    <cognome>Armadoro</cognome>
+    <facoltà>Informatica</facoltà>
+    <annoCorso>3</annoCorso>
+    <fuoriCorso>no</fuoriCorso>
+    <esami>
+      <esame corso="Architettura degli elaboratori">
+        <data>
+          <giorno>23</giorno>
+          <mese>02</mese>
+          <anno>2017</anno>
+        </data>
+        <voto>26</voto>
+        <crediti>6</crediti>
+        <professore>Ciotti</professore>
+      </esame>
+    </esami>
+  </librettoUniversitarioStudente>
+  
+    <librettoUniversitarioStudente numMatricola="10980">
+    <nome>Luca</nome>
+    <cognome>Moroni</cognome>
+    <facoltà>Informatica</facoltà>
+    <annoCorso>5</annoCorso>
+    <esami>
+      <esame corso="Programmazione 2">
+        <data>
+          <giorno>21</giorno>
+          <mese>09</mese>
+          <anno>2017</anno>
+        </data>
+        <voto>30</voto>
+        <crediti>12</crediti>
+        <professore>Visconti</professore>
+        <lode>si</lode>
+      </esame>
+    </esami>
+  </librettoUniversitarioStudente>
+  
+    <librettoUniversitarioStudente numMatricola="12065">
+    <nome>Marco</nome>
+    <cognome>De Luca</cognome>
+    <facoltà>Informatica</facoltà>
+    <annoCorso>3</annoCorso>
+    <fuoriCorso>no</fuoriCorso>
+    <esami>
+      <esame corso="Programmazione 1">
+        <data>
+          <giorno>21</giorno>
+          <mese>01</mese>
+          <anno>2017</anno>
+        </data>
+        <voto>29</voto>
+        <crediti>9</crediti>
+        <professore>Cerri</professore>
+      </esame>
+      
+      <esame corso="Programmazione 2">
+        <data>
+          <giorno>09</giorno>
+          <mese>09</mese>
+          <anno>2017</anno>
+        </data>
+        <voto>30</voto>
+        <crediti>12</crediti>
+        <professore>Cerri</professore>
+        <lode>si</lode>
+      </esame>
+      
+      <esame corso="Programmazione 3">
+        <data>
+          <giorno>15</giorno>
+          <mese>12</mese>
+          <anno>2017</anno>
+        </data>
+        <voto>21</voto>
+        <crediti>12</crediti>
+        <professore>Cerri</professore>
+      </esame>
+    </esami>
+  </librettoUniversitarioStudente>
+  
+    <librettoUniversitarioStudente numMatricola="11984">
+    <nome>Luca</nome>
+    <cognome>Gubbiotti</cognome>
+    <facoltà>Informatica</facoltà>
+    <annoCorso>2</annoCorso>
+    <esami>
+      <esame corso="Tecnologie Web">
+        <data>
+          <giorno>13</giorno>
+          <mese>01</mese>
+          <anno>2017</anno>
+        </data>
+        <voto>30</voto>
+        <crediti>12</crediti>
+        <lode>no</lode>
+      </esame>
+      <esame corso="Sistemi Operativi">
+        <data>
+          <giorno>17</giorno>
+          <mese>12</mese>
+          <anno>2017</anno>
+        </data>
+        <voto>30</voto>
+        <crediti>12</crediti>
+        <lode>si</lode>
+      </esame>
+    </esami>
+  </librettoUniversitarioStudente>
+  
+    <librettoUniversitarioStudente numMatricola="11032">
+    <nome>Daycol</nome>
+    <cognome>Orsini</cognome>
+    <facoltà>Informatica</facoltà>
+    <annoCorso>4</annoCorso>
+    <fuoriCorso>si</fuoriCorso>
+    <esami>
+      <esame corso="Fisica">
+        <data>
+          <giorno>03</giorno>
+          <mese>01</mese>
+          <anno>2017</anno>
+        </data>
+        <voto>25</voto>
+        <crediti>9</crediti>
+        <professore>Crasti</professore>
+      </esame>
+    </esami>
+  </librettoUniversitarioStudente>
+</studenti>
