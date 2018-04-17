@@ -1,0 +1,19 @@
+[2]
+Immagini db
+
+[3]
+
+[4]
+scrollpane + area di testo per il testo degli annunci su cui si clicca + immagine
+
+[5]
+
+modelTipo.addElement("");
+        query = "SELECT Tipo FROM tipo_annuncio ORDER BY Tipo";
+        try {
+            statement = connessione.createStatement();
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                modelTipo.addElement(resultSet.getString(1));
+            }
+        } catch (Exception e) {  }
