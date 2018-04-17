@@ -1,0 +1,6 @@
+
+Immagini db 2
+svuotare i campi delle txt
+Se campi vuoti non NULL esci
+
+prima lettera grande ogni campo
