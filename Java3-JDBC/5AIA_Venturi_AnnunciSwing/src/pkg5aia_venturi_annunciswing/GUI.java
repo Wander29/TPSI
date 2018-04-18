@@ -2,10 +2,17 @@ package pkg5aia_venturi_annunciswing;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import javax.swing.*;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
 import javax.swing.event.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class GUI extends JFrame implements ActionListener 
 {
@@ -23,6 +30,10 @@ public class GUI extends JFrame implements ActionListener
     String[] columnNamesAnn = {"Data", "Titolo", "Relatore"};
     int numRows, cnt, ind_row;
     int dialogBtns = JOptionPane.YES_NO_OPTION, dialogInfo = JOptionPane.INFORMATION_MESSAGE;
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("Images( .jpg .jpeg .png .gif)", "jpg", "png", "gif", "jpeg");
+    File selectedFile = new File("");
+    FileInputStream fileInputStream;
+    boolean fileChosen = false;
     
 /**********************************************/
 /*      DICHIARAZIONE COMPONENTI GRAFICHE     */
@@ -72,6 +83,12 @@ public class GUI extends JFrame implements ActionListener
     JComboBox cbTipo = new JComboBox(modelTipo);
     final DefaultComboBoxModel modelRel = new DefaultComboBoxModel();
     JComboBox cbRel = new JComboBox(modelRel);
+    
+    JButton btnFile = new JButton("IMG");
+    final JFileChooser fileChooser = new JFileChooser();
+    JButton btnFileDel = new JButton("X");
+    ImageIcon imgSel;
+    JLabel lblImg = new JLabel(); 
     
     private JButton btnIns2 = new JButton("INSERISCI");
     private JButton btnReset2 = new JButton("C");
@@ -209,15 +226,22 @@ public class GUI extends JFrame implements ActionListener
         cbRel.setFont(null);
         btnIns2.setFont(null);
         btnReset2.setFont(null);
+        btnFile.setFont(null);
+        btnFileDel.setFont(null);
         
         btnIns2.setBackground(Color.GREEN);
         btnIns2.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnReset2.setBackground(Color.RED);
         btnReset2.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnFile.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnFileDel.setBackground(Color.RED);
+        btnFileDel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         btnReset2.setToolTipText("RESET dei campi");
+        btnFileDel.setToolTipText("Togli l'immagine");
         
         btnReset2.setBounds(600,10,50,50);  
+        lblImg.setVisible(false);
                 
         lblTit.setBounds(50,40,200,30); //x, y, largh, alt
         lblData.setBounds(50,100,200,30);
@@ -230,6 +254,9 @@ public class GUI extends JFrame implements ActionListener
         cbRel.setBounds(330,220,200,30);
         //txtTesto.setBounds(160,280,460,240); non necessario
         scrollPaneTesto.setBounds(20,305,420,240);
+        btnFile.setBounds(480,280,90,50);
+        btnFileDel.setBounds(580,280,55,50);
+        lblImg.setBounds(470,360,180,180);
         btnIns2.setBounds(420,560,200,50);
         
         //3]ShRel
@@ -291,6 +318,9 @@ public class GUI extends JFrame implements ActionListener
         p[1].add(scrollPaneTesto);
         p[1].add(btnIns2);
         p[1].add(btnReset2);
+        p[1].add(btnFile);
+        p[1].add(btnFileDel);
+        p[1].add(lblImg);
         
         //3]ShRel
         
@@ -346,7 +376,10 @@ public class GUI extends JFrame implements ActionListener
         
         btnIns2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnIns2ActionPerformed(evt);
+                try {
+                    btnIns2ActionPerformed(evt);
+                } catch (IOException ex) {
+                }
             }
         });
         
@@ -358,7 +391,10 @@ public class GUI extends JFrame implements ActionListener
         
         btnReset2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                btnReset2ActionPerformed(evt);
+                try {
+                    btnReset2ActionPerformed(evt);
+                } catch (IOException ex) {
+                }
             }
         });
         
@@ -371,6 +407,18 @@ public class GUI extends JFrame implements ActionListener
         btnEli.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 btnEliActionPerformed(evt);
+            }
+        });
+        
+        btnFile.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btnFileActionPerformed(evt);
+            }
+        });
+        
+        btnFileDel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btnFileDelActionPerformed(evt);
             }
         });
         
@@ -454,12 +502,41 @@ public class GUI extends JFrame implements ActionListener
             }
         } catch (Exception e) {  }
         
+        selectedFile = new File("");
+        fileInputStream = null;
+        fileChosen = false;
+        
         setContentPane(p[1]);
         getContentPane().add(btnBack);
         revalidate();
     }
     
-    private void btnIns2ActionPerformed(ActionEvent evt){
+    private void btnFileActionPerformed(ActionEvent evt){
+        try {
+            fileChooser.setFileFilter(filter);
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                fileChosen = true;
+                
+                imgSel = new ImageIcon(fileChooser.getSelectedFile().getAbsolutePath());
+                //Proporzione per la largehzza  larghOr : altOr = larghRes : x
+                imgSel = new ImageIcon(getScaledImage(imgSel.getImage(), lblImg.getWidth(), (imgSel.getIconHeight()*lblImg.getWidth()) / imgSel.getIconWidth() ) );
+                
+                lblImg.setIcon(imgSel);
+                lblImg.setVisible(true);
+                p[1].repaint();
+                revalidate();
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
+    
+    private void btnFileDelActionPerformed(ActionEvent evt){
+        svuotaImg();
+    }
+    
+    private void btnIns2ActionPerformed(ActionEvent evt) throws IOException{
         valori = svuotaArr(valori);
         valori[0] = capitalize1(txtTitolo.getText());
         valori[1] = txtData.getText();
@@ -491,24 +568,57 @@ public class GUI extends JFrame implements ActionListener
                 }
             } catch (Exception e) {  }
 
-            query = "INSERT INTO annuncio (titolo, data, testo, FkTipoA, FkRelatore)"
-                    + " VALUES (?, ?, ?, ?, ?)";
+            query = "INSERT INTO `annuncio` (`CodAnnuncio`, `Titolo`, `Data`, `Testo`, `FkRelatore`, `FkTipoA`) "
+                    + "VALUES (NULL, ?, ?, ?, ?, ?)";
             try {
                 statementPr = connessione.prepareStatement(query);
                 statementPr.setString(1, valori[0]);
                 statementPr.setString(2, valori[1]);
                 statementPr.setString(3, valori[2]);
+                
                 statementPr.setInt(4, cod_selected_text[0]);
                 statementPr.setInt(5, cod_selected_text[1]);
+                System.out.println(statementPr.toString());
+                if (statementPr.executeUpdate() > 0) {
+                    if(fileChosen) {
+                        cod_selected_text = new int[1];
+                        query = "SELECT MAX(CodAnnuncio) FROM annuncio";
+                        try {
+                            statement = connessione.createStatement();
+                            resultSet = statement.executeQuery(query);
+                            if (resultSet.next()) {
+                                cod_selected_text[0] = Integer.parseInt(resultSet.getString(1));
+                            }
+                        } catch (Exception e) {  }
 
-                int rowsInserted = statementPr.executeUpdate();
-                if (rowsInserted > 0) {
-                    inserted(true);
-                    svuota2();
+                        query = "insert into IMG values(?,?,?);";
+                        try {
+                            statementPr = connessione.prepareStatement(query);
+                            statementPr.setInt(1, cod_selected_text[0]);
+                            File selectedFile = fileChooser.getSelectedFile();
+                            statementPr.setString(2, selectedFile.getName());
+                            fileInputStream = new FileInputStream(selectedFile);
+                            statementPr.setBinaryStream(3, fileInputStream, fileInputStream.available());
+                            System.out.println(statementPr.toString());
+                        } catch (Exception e) {  }
+                        if (statementPr.executeUpdate() > 0) {
+                            inserted(true);
+                            svuota2();
+                        } else {
+                            inserted(false);
+                        }
+                    
+                    } else {
+                        inserted(true);
+                        svuota2();
+                    }
                 } else {
                     inserted(false);
                 }
-            } catch (Exception e) { 
+            } catch (SQLException e) { 
+                e.getMessage();
+                e.getStackTrace();
+                e.getSuppressed();
                 inserted(false);
             }
         }
@@ -612,7 +722,7 @@ public class GUI extends JFrame implements ActionListener
                     cod_selected_text[cnt] = Integer.parseInt(resultSet.getString(5));
                     cnt++;
                 }
-            } catch (Exception e) {  }
+            } catch (NumberFormatException | SQLException e) {  }
 
             if (cnt != 0) {
                 tableAnn = new JTable(dataAnn, columnNamesAnn);
@@ -690,7 +800,7 @@ public class GUI extends JFrame implements ActionListener
         svuota1();
     }
     
-    private void btnReset2ActionPerformed(ActionEvent evt){
+    private void btnReset2ActionPerformed(ActionEvent evt) throws IOException{
         svuota2();
     }
    
@@ -760,22 +870,46 @@ public class GUI extends JFrame implements ActionListener
         numRows = cnt = ind_row = 0;
         cod_selected_text = null;
         dataAnn = dataRel = null;
+        selectedFile = new File("");
+        fileInputStream = null;
     }
     
     private void svuota1() {
         txtNomeRel.setText("");
         txtCogRel.setText("");
         cbRuolo.setSelectedIndex(0);
+        
         revalidate();
     }
     
-    private void svuota2() {
+    private void svuota2() throws IOException {
         txtTitolo.setText("");
         txtData.setText("");
         txtTesto.setText("");
         cbTipo.setSelectedIndex(0);
         cbRel.setSelectedIndex(0);
+        svuotaImg();
+        
         revalidate();
+    }
+    
+    private void svuotaImg() {
+        selectedFile = new File("");
+        fileInputStream = null;
+        fileChosen = false;
+        lblImg.setIcon(null);
+        lblImg.setVisible(false);
+    }
+    
+    private Image getScaledImage(Image srcImg, int w, int h){
+        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(srcImg, 0, 0, w, h, null);
+        g2.dispose();
+
+        return resizedImg;
     }
     
     public void infoBox(String msg, String title)

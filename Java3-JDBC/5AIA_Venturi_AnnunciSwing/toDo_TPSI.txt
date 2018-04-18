@@ -1,9 +1,10 @@
 [2]
-Immagini db
 
 [3]
 
 [4]
 immagine get
+
+controllo generale: variaibli, uso funzioni, funz ridondanti, bugs vari
 
 
