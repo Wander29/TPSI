@@ -3,26 +3,26 @@ package pkg5aia_venturi_annunciswing;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.io.*;
-import java.util.*;
 import java.sql.*;
-import javax.swing.table.*;
+import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
+import javax.swing.event.*;
 
 public class GUI extends JFrame implements ActionListener 
 {
     //Variabili utilizzate
-    private static final int PANELS = 5;
+    private static final int PANELS = 4; //senza considerare il Panel del menú
     Connection connessione = null;
     
     String query;
     Statement statement;
     PreparedStatement statementPr;
     ResultSet resultSet;
-    int[] cod_selected_text = new int[2];
+    int[] cod_selected_text;
     String valori[] = new String[5];
     String[] columnNamesRel = {"Cognome", "Nome", "Ruolo"};
     String[] columnNamesAnn = {"Data", "Titolo", "Relatore"};
-    int numRows, cnt;
+    int numRows, cnt, ind_row;
+    int dialogBtns = JOptionPane.YES_NO_OPTION, dialogInfo = JOptionPane.INFORMATION_MESSAGE;
     
 /**********************************************/
 /*      DICHIARAZIONE COMPONENTI GRAFICHE     */
@@ -39,12 +39,10 @@ public class GUI extends JFrame implements ActionListener
     private JButton btnInsRel = new JButton("Inserisci RELATORE");
     private JButton btnInsAnn = new JButton("Inserisci ANNUNCIO");    
     private JButton btnShRel = new JButton("Mostra RELATORI");
-    private JButton btnShAnn = new JButton("Mostra ANNUNCI");
-    private JButton btnDelAnn = new JButton("Cancella ANNUNCIO");
+    private JButton btnShAnn = new JButton("Mostra|Cancella ANNUNCI");
     
     //Comuni
     private JButton btnBack = new JButton("BACK");
-    private JLabel lblResult = new JLabel("");
     
     //1]InsRel
     private JLabel lblNomeRel = new JLabel("NOME Relatore");
@@ -68,6 +66,7 @@ public class GUI extends JFrame implements ActionListener
     private JTextField txtTitolo = new JTextField();
     private JTextField txtData = new JTextField();
     private JTextArea txtTesto = new JTextArea();
+    JScrollPane scrollPaneTesto = new JScrollPane(txtTesto); 
     
     final DefaultComboBoxModel modelTipo = new DefaultComboBoxModel();
     JComboBox cbTipo = new JComboBox(modelTipo);
@@ -80,14 +79,18 @@ public class GUI extends JFrame implements ActionListener
     //3]ShRel
     private JTable tableRel;
     JScrollPane scrollPaneTabRel;
+    String[][] dataRel;
     
     //4]ShAnn
     private JTable tableAnn;
     JScrollPane scrollPaneTabAnn;
+    String[][] dataAnn;
     JComboBox cbTipoAnn = new JComboBox(modelTipo);
     JLabel lblTipoAnn = new JLabel("Tipo Annuncio");
-
-    //5]DelAnn
+    JLabel lblTestoAnn = new JLabel();
+    JTextArea txtTestoAnn = new JTextArea();
+    JScrollPane scrollPaneTestoAnn = new JScrollPane(txtTestoAnn); 
+    JButton btnEli = new JButton ("ELIMINA");
     
 /**********************************************/
 /*                   COSTRUTTORE              */
@@ -138,8 +141,7 @@ public class GUI extends JFrame implements ActionListener
         p[0].setBorder(BorderFactory.createTitledBorder("Inserisci RELATORE"));
         p[1].setBorder(BorderFactory.createTitledBorder("Inserisci ANNUNCIO"));
         p[2].setBorder(BorderFactory.createTitledBorder("Mostra RELATORI"));
-        p[3].setBorder(BorderFactory.createTitledBorder("Mostra ANNUNCI"));
-        p[4].setBorder(BorderFactory.createTitledBorder("Cancella ANNUNCIO"));
+        p[3].setBorder(BorderFactory.createTitledBorder("Mostra | Cancella ANNUNCI"));
         
     /**********************************************/
     /*          CONFIGURAZIONE COMPONENTI         */
@@ -149,32 +151,25 @@ public class GUI extends JFrame implements ActionListener
         btnInsAnn.setFont(null);
         btnShRel.setFont(null);
         btnShAnn.setFont(null);
-        btnDelAnn.setFont(null);
         
         btnInsRel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnInsAnn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnShRel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnShAnn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnDelAnn.setCursor(new Cursor(Cursor.HAND_CURSOR));
        
-        btnInsRel.setBounds(175,60,350,40); //x, y , largh e altezza
-        btnInsAnn.setBounds(175,180,350,40);
-        btnShRel.setBounds(175,300,350,40);
-        btnShAnn.setBounds(175,420,350,40);
-        btnDelAnn.setBounds(175,540,350,40);
+        btnInsRel.setBounds(175,100,350,40); //x, y , largh e altezza
+        btnInsAnn.setBounds(175,230,350,40);
+        btnShRel.setBounds(175,360,350,40);
+        btnShAnn.setBounds(175,490,350,40);
         
         //Comuni
         btnBack.setFont(null);
-        lblResult.setFont(null);
         
         btnBack.setBackground(Color.red);
-        
-        lblResult.setVisible(false);
         
         btnBack.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         btnBack.setBounds(20,560,100,50);
-        lblResult.setBounds(220,560,200,50);
         
         //1] InsRel
         lblNomeRel.setFont(null);
@@ -210,7 +205,6 @@ public class GUI extends JFrame implements ActionListener
         lblTesto.setFont(null);
         txtTitolo.setFont(null);
         txtData.setFont(null);
-        txtTesto.setFont(null);
         cbTipo.setFont(null);
         cbRel.setFont(null);
         btnIns2.setFont(null);
@@ -229,12 +223,13 @@ public class GUI extends JFrame implements ActionListener
         lblData.setBounds(50,100,200,30);
         lblTipo.setBounds(50,160,200,30);
         lblFkRel.setBounds(50,220,200,30);
-        lblTesto.setBounds(50,280,200,30);
+        lblTesto.setBounds(50,280,200,20);
         txtTitolo.setBounds(330,40,200,30);
         txtData.setBounds(330,100,200,30);
         cbTipo.setBounds(330,160,200,30);
         cbRel.setBounds(330,220,200,30);
-        txtTesto.setBounds(160,280,460,240);
+        //txtTesto.setBounds(160,280,460,240); non necessario
+        scrollPaneTesto.setBounds(20,305,420,240);
         btnIns2.setBounds(420,560,200,50);
         
         //3]ShRel
@@ -242,12 +237,25 @@ public class GUI extends JFrame implements ActionListener
         //4]ShAnn
         lblTipoAnn.setFont(null);
         cbTipoAnn.setFont(null);
+        lblTestoAnn.setFont(new Font("Arial", 0, 20));
+        btnEli.setFont(null);
         
-        lblTipoAnn.setBounds(50,20,200,30);
+        btnEli.setForeground(Color.red);
+        btnEli.setBackground(Color.WHITE);
+        
+        btnEli.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        txtTestoAnn.setEditable(false);
+        
+        lblTestoAnn.setVisible(false);
+        scrollPaneTestoAnn.setVisible(false);
+        btnEli.setVisible(false);
+        
+        lblTipoAnn.setBounds(50,20,250,30);
         cbTipoAnn.setBounds(280,20,300,30);
-        
-        //5]DelAnn
-        
+        lblTestoAnn.setBounds(20,315,600,20);
+        scrollPaneTestoAnn.setBounds(20,340,420,200);
+        btnEli.setBounds(300,560,200,50);   //x,y,largh,alt        
         
     /**********************************************/
     /*      AGGIUNTA COMPONENTI NEI PANEL         */
@@ -257,9 +265,8 @@ public class GUI extends JFrame implements ActionListener
         pMenu.add(btnInsAnn);
         pMenu.add(btnShRel);
         pMenu.add(btnShAnn);
-        pMenu.add(btnDelAnn);
         
-        //NOTA, i componenti posso stare solo in un Panel, quelli comuni vanno aggiunti al content pane
+        //NOTA, i componenti possono stare solo in un Panel, quelli comuni vanno aggiunti al content pane
         
         //1] InsRel
         p[0].add(lblNomeRel);
@@ -281,7 +288,7 @@ public class GUI extends JFrame implements ActionListener
         p[1].add(txtData);
         p[1].add(cbTipo);
         p[1].add(cbRel);
-        p[1].add(txtTesto);
+        p[1].add(scrollPaneTesto);
         p[1].add(btnIns2);
         p[1].add(btnReset2);
         
@@ -290,8 +297,9 @@ public class GUI extends JFrame implements ActionListener
         //4]ShAnn
         p[3].add(lblTipoAnn);
         p[3].add(cbTipoAnn);
-        
-        //5]DelAnn
+        p[3].add(lblTestoAnn);
+        p[3].add(scrollPaneTestoAnn);
+        p[3].add(btnEli);
         
         setContentPane(pMenu); //pannello che viene utilizzato
         
@@ -330,12 +338,6 @@ public class GUI extends JFrame implements ActionListener
             }
         });
         
-        btnDelAnn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                btnDelAnnActionPerformed(evt);
-            }
-        });
-        
         btnIns1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 btnIns1ActionPerformed(evt);
@@ -366,6 +368,12 @@ public class GUI extends JFrame implements ActionListener
             }
         });
         
+        btnEli.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btnEliActionPerformed(evt);
+            }
+        });
+        
         setVisible(true); //rende visibile il Frame
     }
 /**********************************************/
@@ -390,7 +398,6 @@ public class GUI extends JFrame implements ActionListener
         
         setContentPane(p[0]);
         getContentPane().add(btnBack);
-        getContentPane().add(lblResult);
         revalidate();
     }
     
@@ -404,7 +411,7 @@ public class GUI extends JFrame implements ActionListener
         {
             inserted(false);
         } else {
-            cod_selected_text = svuotaArr(cod_selected_text);
+            cod_selected_text = new int[1];
             query = "SELECT CodRuolo FROM ruolo WHERE Ruolo = '" + valori[2] + "'";
             try {
                 statement = connessione.createStatement();
@@ -420,8 +427,7 @@ public class GUI extends JFrame implements ActionListener
                 statementPr.setString(1, txtNomeRel.getText());
                 statementPr.setString(2, txtCogRel.getText());
                 statementPr.setInt(3, cod_selected_text[0]);
-
-
+                
                 int rowsInserted = statementPr.executeUpdate();
                 if (rowsInserted > 0) {
                     inserted(true);
@@ -450,7 +456,6 @@ public class GUI extends JFrame implements ActionListener
         
         setContentPane(p[1]);
         getContentPane().add(btnBack);
-        getContentPane().add(lblResult);
         revalidate();
     }
     
@@ -465,7 +470,7 @@ public class GUI extends JFrame implements ActionListener
         {
             inserted(false);
         } else {
-            cod_selected_text = svuotaArr(cod_selected_text);
+            cod_selected_text = new int[2];
             
             query = "SELECT CodTipoA FROM tipo_annuncio WHERE Tipo = '" + valori[3] + "'";
             try {
@@ -519,7 +524,7 @@ public class GUI extends JFrame implements ActionListener
             }
         } catch (Exception e) {  }
         
-        String[][] dataRel = new String[numRows][3];
+        dataRel = new String[numRows][3];
         
         query = "SELECT r.Cognome, r.Nome, ruolo.Ruolo FROM relatore as r, ruolo"
                 + " WHERE r.FkRuolo = ruolo.CodRuolo ORDER BY r.Cognome";
@@ -556,6 +561,8 @@ public class GUI extends JFrame implements ActionListener
     }
     
     private void cbTipoAnnActionPerformed(ActionEvent evt){
+        scrollPaneTestoAnn.setVisible(false);
+        btnEli.setVisible(false);
         valori = svuotaArr(valori);
         if (cbTipoAnn.getItemAt(cbTipoAnn.getSelectedIndex()) != null)
             valori[0] = (String)cbTipoAnn.getItemAt(cbTipoAnn.getSelectedIndex());
@@ -567,7 +574,7 @@ public class GUI extends JFrame implements ActionListener
             }
             numRows = 0;
             
-            cod_selected_text = svuotaArr(cod_selected_text);
+            cod_selected_text = new int[1];
 
             query = "SELECT CodTipoA FROM tipo_annuncio WHERE Tipo = '" + valori[0] + "'";
             try {
@@ -587,13 +594,14 @@ public class GUI extends JFrame implements ActionListener
                 }
             } catch (Exception e) {  }
 
-            String[][] dataAnn = new String[numRows][3];
+            dataAnn = new String[numRows][3];
             cnt = 0;
 
-            query = "SELECT a.Data, a.Titolo, re.Cognome, re.Nome " +
+            query = "SELECT a.Data, a.Titolo, re.Cognome, re.Nome, a.CodAnnuncio " +
                 "FROM relatore as re, annuncio as a " +
                 "WHERE a.FkRelatore = re.CodRelatore AND a.FkTipoA = " + cod_selected_text[0] + 
                 " ORDER BY a.Data";
+            cod_selected_text = new int[numRows];
             try {
                 statement = connessione.createStatement();
                 resultSet = statement.executeQuery(query);
@@ -601,6 +609,7 @@ public class GUI extends JFrame implements ActionListener
                     dataAnn[cnt][0] = (resultSet.getString(1));
                     dataAnn[cnt][1] = (resultSet.getString(2));
                     dataAnn[cnt][2] = (resultSet.getString(3) + " " + resultSet.getString(4));
+                    cod_selected_text[cnt] = Integer.parseInt(resultSet.getString(5));
                     cnt++;
                 }
             } catch (Exception e) {  }
@@ -608,12 +617,42 @@ public class GUI extends JFrame implements ActionListener
             if (cnt != 0) {
                 tableAnn = new JTable(dataAnn, columnNamesAnn);
                 tableAnn.setAutoCreateRowSorter(true); //Permette il sort dall'header
-                scrollPaneTabAnn = new JScrollPane(tableAnn); //metto la tabella nello scrollpane, mi gestisce la visual
-                //tableRel.setFillsViewportHeight(true);//la tabella riempie l'altezza
+                scrollPaneTabAnn = new JScrollPane(tableAnn);
                 scrollPaneTabAnn.setBounds(20,70,640,240);
                 p[3].add(scrollPaneTabAnn);
+                
+                lblTestoAnn.setText("Seleziona un articolo per ELIMINARLO o per visualizzarlo");
+                if (!lblTestoAnn.isVisible())
+                    lblTestoAnn.setVisible(true);
+                p[3].repaint();
+                
+                tableAnn.setSelectionMode(SINGLE_SELECTION);
+                
+                //Listener sul click di una riga o sulla scelta tramite frecce
+                tableAnn.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+                public void valueChanged(ListSelectionEvent event) {
+                    ind_row = tableAnn.getSelectedRow();
+                    if (ind_row != -1) {
+                        query = "SELECT annuncio.Testo FROM annuncio WHERE annuncio.CodAnnuncio = " + cod_selected_text[ind_row];
+                        try {
+                            statement = connessione.createStatement();
+                            resultSet = statement.executeQuery(query);
+                            while (resultSet.next()) {
+                                txtTestoAnn.setText(resultSet.getString(1));
+                            }
+                        } catch (Exception e) {  }
+                        lblTestoAnn.setText("Testo");
+                        scrollPaneTestoAnn.setVisible(true);
+                        btnEli.setVisible(true);
+                    }      
+                }
+            });
+            } else { //se la tabella risultante é vuota
+                lblTestoAnn.setVisible(false);
             }
         } else {
+            lblTestoAnn.setVisible(false);
+            scrollPaneTestoAnn.setVisible(false);
             if (cnt != 0) {
                 p[3].remove(scrollPaneTabAnn);
                 scrollPaneTabAnn = null;
@@ -624,10 +663,27 @@ public class GUI extends JFrame implements ActionListener
         repaint();
     }
     
-    private void btnDelAnnActionPerformed(ActionEvent evt){
-        setContentPane(pMenu);
-        cleanVar();
-        revalidate();
+    private void btnEliActionPerformed(ActionEvent evt){
+        valori[0] = "Eliminare l'annuncio '" + (String)tableAnn.getValueAt(tableAnn.getSelectedRow(), 1) + "' ?";//Messaggio messageBox
+        valori[1] = "ELIMINAZIONE annuncio";//Titolo messageBox
+        if(dialogBox(valori[0], valori[1]) == 0) {
+            //Se SI
+            query = "DELETE annuncio.* FROM annuncio WHERE annuncio.CodAnnuncio = ?";
+            try {
+                statementPr = connessione.prepareStatement(query);
+                statementPr.setInt(1, cod_selected_text[ind_row]);
+
+                int rowsUpdated = statementPr.executeUpdate();
+                if (rowsUpdated > 0) {
+                    infoBox("Eliminazione effettuata con successo", "ELIMINAZIONE COMPLETATA");
+                    cbTipoAnnActionPerformed(evt);
+                } else {
+                    infoBox("Eliminazione non riuscita", "ELIMINAZIONE FALLITA");
+                }
+            } catch (Exception e) {  }
+        } else {
+            //se NO
+        }
     }
     
     private void btnReset1ActionPerformed(ActionEvent evt){
@@ -637,20 +693,16 @@ public class GUI extends JFrame implements ActionListener
     private void btnReset2ActionPerformed(ActionEvent evt){
         svuota2();
     }
-    
    
     public static void main(String[] args) {
         GUI annunci_GUI = new GUI(700, 700);
     }
     
     private void inserted(boolean flag) {
-        lblResult.setVisible(true);
         if (flag){
-            lblResult.setForeground(Color.blue);
-            lblResult.setText("Record INSERITO");
+            infoBox("Record INSERITO correttamente", "INSERIMENTO COMPLETATO");
         } else {
-            lblResult.setForeground(Color.RED);
-            lblResult.setText("ERRORE");
+            infoBox("ERRORE: Record NON INSERITO", "INSERIMENTO FALLITO");
         }         
     }
     
@@ -701,16 +753,13 @@ public class GUI extends JFrame implements ActionListener
         modelRuolo.removeAllElements();
         modelTipo.removeAllElements();
         query = "";
-        cod_selected_text = svuotaArr(cod_selected_text);
         valori = svuotaArr(valori);
         statement = null;
         statementPr = null;
         resultSet = null;
-        numRows = cnt = 0;
-        
-        if (lblResult.isVisible()) {
-            lblResult.setVisible(false);
-        }
+        numRows = cnt = ind_row = 0;
+        cod_selected_text = null;
+        dataAnn = dataRel = null;
     }
     
     private void svuota1() {
@@ -727,6 +776,16 @@ public class GUI extends JFrame implements ActionListener
         cbTipo.setSelectedIndex(0);
         cbRel.setSelectedIndex(0);
         revalidate();
+    }
+    
+    public void infoBox(String msg, String title)
+    {
+        JOptionPane.showMessageDialog(this, msg, title, dialogInfo);
+    }
+    
+    public int dialogBox(String msg, String title)
+    {
+        return JOptionPane.showConfirmDialog(this, msg, title, dialogBtns);
     }
 
     @Override
